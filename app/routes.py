@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -143,17 +143,13 @@ def generate_workout(
     # Show Result Page
     # ------------------------------------------------
 
-    return templates.TemplateResponse(
-        request=request,
-        name="result.html",
-        context={
-            "request": request,
-            "user": user,
-            "plan": workout_plan,
-            "tip": nutrition_tip,
-            "updated": False,
-            "error": None
-        }
+    # ------------------------------------------------
+    # Go to Personal Dashboard
+    # ------------------------------------------------
+
+    return RedirectResponse(
+        url=f"/dashboard/{user.user_id}",
+        status_code=303
     )
 
 
@@ -297,3 +293,154 @@ def remove_user(
         url="/view-all-users",
         status_code=303
     )
+# ==================================================
+# LOGIN
+# ==================================================
+
+@router.get(
+    "/login",
+    response_class=HTMLResponse
+)
+def login_page(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="login.html",
+        context={
+            "request": request
+        }
+    )
+
+
+@router.post(
+    "/login-user",
+    response_class=HTMLResponse
+)
+def login_user(
+    request: Request,
+    email: str = Form(...)
+):
+    email = email.strip().lower()
+
+    # Coach login
+    if email == "coach@fitbuddy.com":
+        return RedirectResponse(
+            url="/view-all-users",
+            status_code=303
+        )
+
+    # Create stable user ID from Gmail
+    user_id = email.replace("@", "_at_").replace(".", "_")
+
+    # Existing user -> personal dashboard
+    user = get_user(user_id)
+
+    if user:
+        return RedirectResponse(
+            url=f"/dashboard/{user.user_id}",
+            status_code=303
+        )
+
+    # New user -> profile setup
+    return RedirectResponse(
+        url=f"/setup?email={email}",
+        status_code=303
+    )
+
+
+# ==================================================
+# NEW USER PROFILE SETUP
+# ==================================================
+
+@router.get(
+    "/setup",
+    response_class=HTMLResponse
+)
+def setup_profile(
+    request: Request,
+    email: str = ""
+):
+    email = email.strip().lower()
+
+    user_id = (
+        email
+        .replace("@", "_at_")
+        .replace(".", "_")
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="setup.html",
+        context={
+            "request": request,
+            "email": email,
+            "user_id": user_id
+        }
+    )
+
+# ==================================================
+# PERSONAL USER DASHBOARD
+# ==================================================
+
+@router.get(
+    "/dashboard/{user_id}",
+    response_class=HTMLResponse
+)
+def user_dashboard(
+    request: Request,
+    user_id: str
+):
+    user = get_user(user_id)
+
+    if not user:
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={
+            "request": request,
+            "user": user
+        }
+    )
+from app.gemini_generator import ask_ai_coach
+
+# ==================================================
+# AI COACH
+# ==================================================
+
+@router.post(
+    "/ai-coach",
+    response_class=HTMLResponse
+)
+def ai_coach(
+    request: Request,
+    user_id: str = Form(...),
+    question: str = Form(...)
+):
+    user = get_user(user_id)
+
+    if not user:
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    answer = ask_ai_coach(
+        question=question,
+        username=user.username,
+        goal=user.goal
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="dashboard.html",
+        context={
+            "request": request,
+            "user": user,
+            "coach_answer": answer
+        }
+    )
+

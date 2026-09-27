@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy - Login</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #0b0f0d;
+            color: white;
+        }
+
+        .login-card {
+            width: 420px;
+            max-width: 90%;
+            padding: 40px;
+            border-radius: 20px;
+            background: #151b18;
+            border: 1px solid #26332d;
+            box-shadow: 0 20px 60px rgba(0,0,0,.4);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #39e58c;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9aa8a1;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #dce5e0;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #34443c;
+            background: #0f1412;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #39e58c;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: 0;
+            border-radius: 10px;
+            background: #39e58c;
+            color: #07100b;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c85;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+
+        <div class="logo">Fit<span>Buddy</span> 💪</div>
+
+        <h1>Welcome Back</h1>
+
+        <p class="subtitle">
+            Your AI-powered personal fitness coach
+        </p>
+
+        <form method="post" action="/login-user">
+
+            <label for="email">Gmail Address</label>
+
+            <input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="yourname@gmail.com"
+                required
+            >
+
+            <button type="submit">
+                Login with Gmail →
+            </button>
+
+        </form>
+
+        <div class="note">
+            New user? Just enter your Gmail and we'll create your profile.
+        </div>
+
+    </div>
+</body>
+</html>

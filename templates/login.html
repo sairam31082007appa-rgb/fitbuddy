@@ -1,0 +1,415 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy - Login</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: rgba(255,255,255,.88);
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --input: #ffffff;
+            --primary: #111827;
+            --shadow: 0 25px 70px rgba(15,23,42,.12);
+        }
+
+        body.dark {
+            --bg: #080b12;
+            --card: rgba(17,24,39,.88);
+            --text: #f9fafb;
+            --muted: #9ca3af;
+            --border: #273244;
+            --input: #0f172a;
+            --primary: #ffffff;
+            --shadow: 0 25px 70px rgba(0,0,0,.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: .25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow-x: hidden;
+        }
+
+        .background {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .18;
+        }
+
+        .orb.one {
+            top: -100px;
+            left: -80px;
+            background: #6366f1;
+        }
+
+        .orb.two {
+            right: -100px;
+            bottom: -100px;
+            background: #22c55e;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1050px;
+            min-height: 650px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left {
+            padding: 65px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 25px;
+            font-weight: 800;
+            margin-bottom: 55px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--text);
+            color: var(--bg);
+            font-size: 25px;
+        }
+
+        h1 {
+            font-size: 48px;
+            line-height: 1.05;
+            margin: 0 0 18px;
+            letter-spacing: -1.8px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.6;
+            max-width: 440px;
+            margin-bottom: 35px;
+        }
+
+        .features {
+            display: grid;
+            gap: 16px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .check {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(34,197,94,.12);
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .right {
+            padding: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(127,127,127,.035);
+            border-left: 1px solid var(--border);
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 390px;
+        }
+
+        .login-card h2 {
+            font-size: 30px;
+            margin: 0 0 10px;
+        }
+
+        .login-card p {
+            color: var(--muted);
+            margin: 0 0 30px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 17px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: var(--input);
+            color: var(--text);
+            outline: none;
+            font-size: 15px;
+            transition: .2s;
+        }
+
+        input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99,102,241,.12);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 16px;
+            border: 0;
+            border-radius: 14px;
+            background: var(--primary);
+            color: var(--bg);
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            opacity: .9;
+        }
+
+        .hint {
+            margin-top: 18px !important;
+            text-align: center;
+            font-size: 13px !important;
+        }
+
+        .theme-btn {
+            position: fixed;
+            top: 22px;
+            right: 22px;
+            z-index: 10;
+            width: auto;
+            margin: 0;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            border-radius: 12px;
+            font-size: 13px;
+            backdrop-filter: blur(12px);
+        }
+
+        @media (max-width: 800px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .left {
+                padding: 40px 30px 25px;
+            }
+
+            .brand {
+                margin-bottom: 35px;
+            }
+
+            h1 {
+                font-size: 38px;
+            }
+
+            .right {
+                border-left: 0;
+                border-top: 1px solid var(--border);
+                padding: 35px 30px 45px;
+            }
+        }
+    </style>
+</head>
+
+<body class="dark">
+
+    <div class="background">
+        <div class="orb one"></div>
+        <div class="orb two"></div>
+    </div>
+
+    <button class="theme-btn" onclick="toggleTheme()">
+        <span id="themeIcon">☀️</span>
+        <span id="themeText">Light</span>
+    </button>
+
+    <main class="container">
+
+        <section class="left">
+
+            <div class="brand">
+                <div class="logo"><img src="/static/logo.png" alt="FitBuddy Logo"></div>
+                <span>FitBuddy</span>
+            </div>
+
+            <h1>Your fitness journey starts here.</h1>
+
+            <p class="subtitle">
+                Get personalized workout plans, smart fitness guidance,
+                and an AI coach built around your goals.
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <span class="check">✓</span>
+                    Personalized 7-day workout plans
+                </div>
+
+                <div class="feature">
+                    <span class="check">✓</span>
+                    AI-powered fitness coach
+                </div>
+
+                <div class="feature">
+                    <span class="check">✓</span>
+                    Simple and practical guidance
+                </div>
+            </div>
+
+        </section>
+
+        <section class="right">
+
+            <div class="login-card">
+
+                <h2>Welcome back 👋</h2>
+
+                <p>
+                    Enter your Gmail address to continue to your FitBuddy dashboard.
+                </p>
+
+                <form action="/login-user" method="post">
+
+                    <label for="email">Gmail address</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@gmail.com"
+                        required
+                    >
+
+                    <button type="submit">
+                        Continue with Gmail →
+                    </button>
+
+                </form>
+
+                <p class="hint">
+                    New here? We'll create your fitness profile automatically.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script>
+        function applyTheme() {
+            const saved = localStorage.getItem("fitbuddy-theme");
+
+            if (saved === "light") {
+                document.body.classList.remove("dark");
+                document.getElementById("themeIcon").textContent = "🌙";
+                document.getElementById("themeText").textContent = "Dark";
+            } else {
+                document.body.classList.add("dark");
+                document.getElementById("themeIcon").textContent = "☀️";
+                document.getElementById("themeText").textContent = "Light";
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+
+            const isDark = document.body.classList.contains("dark");
+
+            localStorage.setItem(
+                "fitbuddy-theme",
+                isDark ? "dark" : "light"
+            );
+
+            document.getElementById("themeIcon").textContent =
+                isDark ? "☀️" : "🌙";
+
+            document.getElementById("themeText").textContent =
+                isDark ? "Light" : "Dark";
+        }
+
+        window.addEventListener("DOMContentLoaded", applyTheme);
+    </script>
+
+</body>
+</html>
+
+
+<style>
+.logo img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 12px;
+    border-radius: 20px;
+}
+</style>

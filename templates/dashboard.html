@@ -1,0 +1,1860 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitBuddy Dashboard</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+    --bg:#06111f;
+    --panel:#0b1a2d;
+    --panel2:#10233a;
+    --border:#1b3552;
+    --text:#f4f8ff;
+    --muted:#8ea3bb;
+    --green:#32f28b;
+    --green2:#0fcf72;
+    --blue:#2674e8;
+    --purple:#6955e8;
+    --orange:#f4a126;
+    --pink:#e94d72;
+}
+
+body{
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+}
+
+a{text-decoration:none;color:inherit}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:275px;
+    background:#071523;
+    border-right:1px solid #172b42;
+    padding:22px 14px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    z-index:20;
+}
+
+.logo-box{
+    padding:4px 14px 24px;
+    border-bottom:1px solid #172b42;
+    margin-bottom:20px;
+}
+
+.logo-box img{
+    width:205px;
+    height:70px;
+    object-fit:contain;
+    object-position:left center;
+}
+
+.logo-sub{
+    color:#7890a8;
+    font-size:11px;
+    margin-left:42px;
+    margin-top:-12px;
+    letter-spacing:.5px;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.menu a{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:14px 18px;
+    border-radius:11px;
+    color:#aebfd2;
+    font-size:15px;
+    transition:.2s;
+}
+
+.menu a:hover{
+    background:#102a3e;
+    color:white;
+}
+
+.menu a.active{
+    background:linear-gradient(90deg,#126f4d,#075f43);
+    color:white;
+    box-shadow:0 8px 22px rgba(19,218,119,.12);
+}
+
+.menu-icon{
+    width:22px;
+    text-align:center;
+    font-size:20px;
+}
+
+.badge{
+    margin-left:auto;
+    background:#22e57d;
+    color:#062016;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:800;
+}
+
+.sidebar-tip{
+    position:absolute;
+    left:24px;
+    right:24px;
+    bottom:28px;
+    padding:22px 18px;
+    min-height:155px;
+    border:1px solid #1d384a;
+    border-radius:15px;
+    background:linear-gradient(145deg,#0a2730,#0a1b28);
+    overflow:hidden;
+}
+
+.sidebar-tip .tip-icon{
+    color:var(--green);
+    font-size:27px;
+    margin-bottom:14px;
+}
+
+.sidebar-tip strong{
+    display:block;
+    font-size:15px;
+    line-height:1.5;
+}
+
+.sidebar-tip span{
+    color:var(--green);
+}
+
+/* MAIN */
+.main{
+    margin-left:275px;
+    width:calc(100% - 275px);
+}
+
+/* TOPBAR */
+.topbar{
+    height:78px;
+    border-bottom:1px solid #172b42;
+    background:#071523;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 30px;
+}
+
+.search{
+    width:480px;
+    height:44px;
+    border:1px solid #203b5a;
+    background:#0d2036;
+    border-radius:25px;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:0 18px;
+    color:#7e95ad;
+}
+
+.search input{
+    flex:1;
+    background:none;
+    border:0;
+    outline:none;
+    color:white;
+    font-size:14px;
+}
+
+.search input::placeholder{color:#7289a1}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.bell{
+    font-size:23px;
+    color:#bdccdb;
+    position:relative;
+}
+
+.bell-dot{
+    position:absolute;
+    width:9px;
+    height:9px;
+    background:var(--green);
+    border-radius:50%;
+    right:-2px;
+    top:-2px;
+}
+
+.user-mini{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:var(--green);
+    color:#062518;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:20px;
+}
+
+.user-name{
+    font-weight:700;
+    font-size:14px;
+}
+
+.user-role{
+    color:#7890a8;
+    font-size:11px;
+    margin-top:4px;
+}
+
+/* CONTENT */
+.content{
+    padding:18px;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:18px;
+}
+
+.left-column,
+.right-column{
+    min-width:0;
+}
+
+/* HERO */
+.hero{
+    height:147px;
+    border:1px solid #1c3854;
+    border-radius:15px;
+    padding:26px 29px;
+    position:relative;
+    overflow:hidden;
+    background:
+        linear-gradient(90deg,rgba(4,25,37,.98) 0%,rgba(5,28,42,.88) 45%,rgba(6,25,38,.58) 100%),
+        radial-gradient(circle at 80% 50%,#375f71,transparent 35%),
+        linear-gradient(135deg,#102b3e,#071626);
+}
+
+.hero:after{
+    content:"";
+    position:absolute;
+    width:260px;
+    height:260px;
+    right:90px;
+    top:-75px;
+    border-radius:50%;
+    background:rgba(53,242,139,.07);
+    filter:blur(15px);
+}
+
+.hero small{
+    color:var(--green);
+    font-weight:800;
+    letter-spacing:.8px;
+    font-size:12px;
+}
+
+.hero h1{
+    font-size:32px;
+    margin-top:6px;
+    position:relative;
+    z-index:2;
+}
+
+.hero p{
+    color:#8fa5bb;
+    margin-top:7px;
+    font-size:14px;
+}
+
+.hero-quote{
+    position:absolute;
+    right:28px;
+    top:47px;
+    color:#d9e3ec;
+    font-size:13px;
+    z-index:3;
+}
+
+.active-plan{
+    position:absolute;
+    right:24px;
+    bottom:18px;
+    border:1px solid #18c978;
+    color:#26e887;
+    border-radius:22px;
+    padding:8px 18px;
+    font-size:12px;
+    font-weight:700;
+    z-index:3;
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:11px;
+    margin-top:14px;
+}
+
+.stat{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    min-height:92px;
+}
+
+.stat-icon{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    flex-shrink:0;
+}
+
+.green{background:#0c5c43}
+.purple{background:#443c9b}
+.pink{background:#8b294c}
+.orange{background:#9b5d12}
+
+.stat-label{
+    color:#9aacbe;
+    font-size:12px;
+}
+
+.stat-value{
+    font-size:16px;
+    font-weight:800;
+    margin-top:6px;
+}
+
+/* CARDS */
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+}
+
+.card-header{
+    padding:17px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #17304a;
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:17px;
+    font-weight:800;
+}
+
+.card-sub{
+    color:#7f95ab;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.plan-badge{
+    background:#0b6d49;
+    color:#35ef91;
+    padding:9px 14px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.bottom-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:18px;
+    margin-top:16px;
+}
+
+/* WORKOUT */
+.workout{
+    position:relative;
+    min-height:280px;
+    padding:20px;
+    overflow:hidden;
+}
+
+.workout:after{
+    content:"";
+    position:absolute;
+    right:0;
+    top:0;
+    width:42%;
+    height:100%;
+    background:
+        radial-gradient(circle at 60% 45%,rgba(50,242,139,.22),transparent 32%),
+        linear-gradient(135deg,transparent,#0c2a35);
+    opacity:.9;
+}
+
+.day{
+    font-size:15px;
+    font-weight:900;
+    margin-bottom:20px;
+    position:relative;
+    z-index:2;
+}
+
+.focus{
+    color:#9aacbe;
+    font-size:12px;
+    position:relative;
+    z-index:2;
+}
+
+.focus strong{
+    display:block;
+    color:#e8f0f7;
+    margin-top:7px;
+    font-size:13px;
+}
+
+.details{
+    display:flex;
+    gap:0;
+    margin-top:26px;
+    position:relative;
+    z-index:2;
+}
+
+.detail{
+    padding:0 22px;
+    border-right:1px solid #23415a;
+}
+
+.detail:first-child{padding-left:0}
+
+.detail:last-child{border:0}
+
+.detail-label{
+    color:#71889f;
+    font-size:10px;
+}
+
+.detail-value{
+    color:#dbe6ef;
+    font-size:12px;
+    margin-top:7px;
+}
+
+.full-plan{
+    margin-top:25px;
+    position:relative;
+    z-index:4;
+    display:inline-block;
+    background:var(--green);
+    color:#042316;
+    font-weight:900;
+    border-radius:22px;
+    padding:10px 22px;
+    font-size:12px;
+}
+
+/* PROFILE */
+.profile{
+    padding-bottom:18px;
+}
+
+.profile-top{
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border-bottom:1px solid #17304a;
+}
+
+.profile-avatar{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:var(--green);
+    color:#062518;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:20px;
+}
+
+.profile-name{
+    font-weight:800;
+}
+
+.profile-role{
+    color:#8197ad;
+    font-size:11px;
+    margin-top:4px;
+}
+
+.profile-details{
+    padding:5px 18px;
+}
+
+.profile-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #162d45;
+    font-size:12px;
+}
+
+.profile-row:last-child{border:0}
+
+.profile-row span:first-child{color:#91a4b8}
+
+.profile-row span:last-child{font-weight:700}
+
+.edit{
+    margin:5px 18px 0;
+    display:block;
+    text-align:center;
+    border:1px solid #1bd37c;
+    color:#2fe98b;
+    border-radius:22px;
+    padding:9px;
+    font-size:12px;
+    font-weight:800;
+}
+
+/* QUICK ACTIONS */
+.quick{
+    padding-bottom:20px;
+}
+
+.quick-grid{
+    padding:18px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.quick-btn{
+    min-height:100px;
+    border-radius:14px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:800;
+    transition:.2s;
+}
+
+.quick-btn:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.08);
+}
+
+.quick-btn span{
+    font-size:23px;
+}
+
+.q-green{background:linear-gradient(145deg,#0c9b60,#087347)}
+.q-purple{background:linear-gradient(145deg,#5751c8,#42389d)}
+.q-blue{background:linear-gradient(145deg,#1669c8,#18539b)}
+.q-orange{background:linear-gradient(145deg,#c37b13,#9c5d0b)}
+
+.quick-badge{
+    position:absolute;
+    margin-left:72px;
+    margin-top:-70px;
+    background:#24dc80;
+    color:#062519;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    font-size:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* PROGRESS */
+.progress-card{
+    margin-top:16px;
+    padding-bottom:18px;
+}
+
+.progress-head{
+    padding:17px 18px 10px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.progress-link{
+    color:#39e88d;
+    font-size:11px;
+}
+
+.progress-items{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    padding:10px 18px;
+}
+
+.circle{
+    text-align:center;
+}
+
+.ring{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:conic-gradient(var(--green) 0deg,#19344a 0deg);
+    position:relative;
+}
+
+.ring:after{
+    content:"";
+    position:absolute;
+    width:62px;
+    height:62px;
+    background:var(--panel);
+    border-radius:50%;
+}
+
+.ring span{
+    position:relative;
+    z-index:2;
+    font-weight:800;
+}
+
+.circle:nth-child(2) .ring{
+    background:conic-gradient(var(--purple) 0deg,#19344a 0deg);
+}
+
+.circle:nth-child(3) .ring{
+    background:conic-gradient(var(--orange) 0deg,#19344a 0deg);
+}
+
+.circle-label{
+    margin-top:10px;
+    color:#a5b5c6;
+    font-size:11px;
+    line-height:1.5;
+}
+
+.circle-label strong{
+    display:block;
+    color:#dce6ef;
+}
+
+/* RECENT ACTIVITY */
+.activity{
+    margin-top:16px;
+}
+
+.activity-body{
+    padding:17px 20px;
+}
+
+.activity-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:11px 0;
+    border-bottom:1px solid #17304a;
+}
+
+.activity-item:last-child{border:0}
+
+.activity-icon{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#0d5f45;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.activity-text{
+    font-size:12px;
+}
+
+.activity-time{
+    color:#71889f;
+    font-size:10px;
+    margin-top:4px;
+}
+
+/* AI */
+.ai{
+    margin-top:16px;
+    padding-bottom:18px;
+}
+
+.ai-form{
+    padding:18px;
+}
+
+.ai-form textarea{
+    width:100%;
+    min-height:90px;
+    resize:vertical;
+    border:1px solid #1d3955;
+    background:#081a2b;
+    border-radius:12px;
+    padding:12px;
+    color:white;
+    outline:none;
+    font-family:inherit;
+}
+
+.ai-form textarea:focus{
+    border-color:#28df85;
+}
+
+.ai-btn{
+    width:100%;
+    margin-top:10px;
+    border:0;
+    background:var(--green);
+    color:#042316;
+    border-radius:12px;
+    padding:12px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.answer{
+    margin:0 18px;
+    background:#0a2532;
+    border:1px solid #1b684d;
+    border-radius:12px;
+    padding:15px;
+}
+
+.answer-title{
+    color:#34ed91;
+    font-weight:800;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.answer-text{
+    color:#cbd8e4;
+    font-size:13px;
+    line-height:1.6;
+    white-space:pre-wrap;
+}
+
+/* MOBILE */
+@media(max-width:1100px){
+    .sidebar{width:220px}
+    .main{margin-left:220px;width:calc(100% - 220px)}
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .dashboard-grid{grid-template-columns:1fr}
+    .right-column{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .progress-card{margin-top:0}
+}
+
+@media(max-width:760px){
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        border-right:0;
+        border-bottom:1px solid #172b42;
+    }
+
+    .app{display:block}
+    .main{margin-left:0;width:100%}
+    .sidebar-tip{display:none}
+    .menu{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .menu a{
+        justify-content:center;
+        padding:10px;
+        font-size:11px;
+        flex-direction:column;
+        gap:4px;
+    }
+
+    .topbar{
+        padding:0 15px;
+    }
+
+    .search{width:55%}
+    .user-name,.user-role{display:none}
+
+    .content{padding:12px}
+    .stats{grid-template-columns:1fr 1fr}
+    .bottom-grid{grid-template-columns:1fr}
+    .right-column{display:block}
+    .progress-card{margin-top:16px}
+    .hero{height:170px;padding:22px}
+    .hero h1{font-size:25px}
+    .hero-quote{display:none}
+    .active-plan{right:20px}
+}
+
+@media(max-width:480px){
+    .stats{grid-template-columns:1fr}
+    .search{width:60%}
+    .top-actions{gap:10px}
+    .logo-box img{width:180px}
+    .details{flex-wrap:wrap;gap:15px}
+    .detail{padding:0 12px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+
+    <div class="logo-box">
+        <img src="/static/logo.png" alt="FitBuddy Logo">
+        <div class="logo-sub">Stronger • Healthier • Happier</div>
+    </div>
+
+    <nav class="menu">
+
+        <a href="/dashboard/{{ user.user_id }}" class="active">
+            <span class="menu-icon">⌂</span>
+            Dashboard
+        </a>
+
+        <a href="#workout">
+            <span class="menu-icon">🏋</span>
+            Workout Plan
+        </a>
+
+        <a href="#diet">
+            <span class="menu-icon">🍴</span>
+            Diet Plan
+        </a>
+
+        <a href="#progress">
+            <span class="menu-icon">▥</span>
+            Progress
+        </a>
+
+        <a href="#coach">
+            <span class="menu-icon">✦</span>
+            AI Coach
+        </a>
+
+        <a href="#messages">
+            <span class="menu-icon">▣</span>
+            Messages
+            <span class="badge">2</span>
+        </a>
+
+        <a href="#settings">
+            <span class="menu-icon">⚙</span>
+            Settings
+        </a>
+
+    </nav>
+
+    <div class="sidebar-tip">
+        <div class="tip-icon">🏃</div>
+        <strong>Small steps<br>every day lead to<br><span>big results!</span></strong>
+    </div>
+
+</aside>
+
+
+<!-- MAIN -->
+<main class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <div class="search" onclick="document.getElementById('fitbuddySearch')?.focus()">
+            🔍
+            <input id="fitbuddySearch" type="text" placeholder="Search workouts, meals, or tips...">
+        </div>
+
+        <button class="mobile-menu-btn" type="button" onclick="toggleMobileMenu()" title="Menu">☰</button>
+<div class="top-actions">
+    <a href="/login" class="logout-btn">Logout</a>
+    <button class="theme-toggle" id="themeToggle" type="button" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+
+            <div class="bell">
+                ♧
+                <span class="bell-dot"></span>
+            </div>
+
+            <div class="user-mini">
+                <div class="avatar">
+                    {{ user.username[0]|upper }}
+                </div>
+
+                <div>
+                    <div class="user-name">{{ user.username }}</div>
+                    <div class="user-role">FitBuddy Member</div>
+                </div>
+
+                <span>⌄</span>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <div class="content">
+
+        <div class="dashboard-grid">
+
+            <!-- LEFT -->
+            <section class="left-column">
+
+                <!-- HERO -->
+                <div class="hero">
+
+                    <small>PERSONAL FITNESS DASHBOARD</small>
+
+                    <h1>Welcome, {{ user.username }} 👋</h1>
+
+                    <p>Your personalized fitness journey starts here.</p>
+
+                    <div class="hero-quote">“Better than yesterday”</div>
+
+                    <div class="active-plan">● &nbsp; Plan Active</div>
+
+                </div>
+
+
+                <!-- STATS -->
+                <div class="stats">
+
+                    <div class="stat">
+                        <div class="stat-icon green">▣</div>
+                        <div>
+                            <div class="stat-label">Age</div>
+                            <div class="stat-value">{{ user.age }} Yrs</div>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-icon purple">♟</div>
+                        <div>
+                            <div class="stat-label">Weight</div>
+                            <div class="stat-value">{{ user.weight }} Kg</div>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-icon pink">◎</div>
+                        <div>
+                            <div class="stat-label">Goal</div>
+                            <div class="stat-value">{{ user.goal|title }}</div>
+                        </div>
+                    </div>
+
+                    <div class="stat">
+                        <div class="stat-icon orange">🔥</div>
+                        <div>
+                            <div class="stat-label">Intensity</div>
+                            <div class="stat-value">{{ user.intensity|title }}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- WORKOUT + PROFILE -->
+                <div class="bottom-grid">
+
+                    <div class="card" id="workout">
+
+                        <div class="card-header">
+
+                            <div>
+                                <div class="card-title">🏋️ Your Workout Plan</div>
+                                <div class="card-sub">Your personalized training plan</div>
+                            </div>
+
+                            <div class="plan-badge">7 Day Plan</div>
+
+                        </div>
+
+                        <div class="workout">
+
+                            <div class="day">DAY 1 — FULL BODY</div>
+
+                            <div class="focus">
+                                🎯 Focus
+                                <strong>{{ user.goal|title }} foundation</strong>
+                            </div>
+
+                            <div class="details">
+
+                                <div class="detail">
+                                    <div class="detail-label">🏋 Duration</div>
+                                    <div class="detail-value">45–60 mins</div>
+                                </div>
+
+                                <div class="detail">
+                                    <div class="detail-label">🔥 Calories (approx)</div>
+                                    <div class="detail-value">300–450 kcal</div>
+                                </div>
+
+                                <div class="detail">
+                                    <div class="detail-label">▥ Level</div>
+                                    <div class="detail-value">Beginner</div>
+                                </div>
+
+                            </div>
+
+                            <a href="#full-plan" class="full-plan">
+                                View Full Plan &nbsp; →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROFILE -->
+                    <div class="card profile">
+
+                        <div class="profile-top">
+
+                            <div class="profile-avatar">
+                                {{ user.username[0]|upper }}
+                            </div>
+
+                            <div>
+                                <div class="profile-name">{{ user.username }}</div>
+                                <div class="profile-role">FitBuddy Member</div>
+                            </div>
+
+                        </div>
+
+                        <div class="profile-details">
+
+                            <div class="profile-row">
+                                <span>♙ &nbsp; Age</span>
+                                <span>{{ user.age }} Years</span>
+                            </div>
+
+                            <div class="profile-row">
+                                <span>♧ &nbsp; Weight</span>
+                                <span>{{ user.weight }} Kg</span>
+                            </div>
+
+                            <div class="profile-row">
+                                <span>◎ &nbsp; Goal</span>
+                                <span>{{ user.goal|title }}</span>
+                            </div>
+
+                            <div class="profile-row">
+                                <span>▥ &nbsp; Intensity</span>
+                                <span>{{ user.intensity|title }}</span>
+                            </div>
+
+                        </div>
+
+                        <a href="#settings" class="edit">✎ &nbsp; Edit Profile</a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT ACTIVITY -->
+                <div class="card activity" id="messages">
+
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">🕘 Recent Activity</div>
+                            <div class="card-sub">Stay consistent!</div>
+                        </div>
+                        <span>◫</span>
+                    </div>
+
+                    <div class="activity-body">
+
+                        <div class="activity-item">
+                            <div class="activity-icon">🏋</div>
+                            <div class="activity-text">
+                                Workout plan generated
+                                <div class="activity-time">Today</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon">🥗</div>
+                            <div class="activity-text">
+                                Nutrition plan is ready
+                                <div class="activity-time">Today</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- AI COACH -->
+                <div class="card ai" id="coach">
+
+                    <div class="card-header">
+
+                        <div>
+                            <div class="card-title">🤖 AI Coach</div>
+                            <div class="card-sub">Ask your personal fitness assistant</div>
+                        </div>
+
+                        <span style="color:#35ed91">● Online</span>
+
+                    </div>
+
+                    <form method="post" action="/ai-coach" class="ai-form">
+
+                        <input type="hidden" name="user_id" value="{{ user.user_id }}">
+
+                        <textarea
+                            name="question"
+                            placeholder="Ask something like: What workout should I do today?"
+                            required
+                        ></textarea>
+
+                        <button type="submit" class="ai-btn">
+                            Ask AI Coach →
+                        </button>
+
+                    </form>
+
+                    {% if coach_answer %}
+                    <div class="answer">
+                        <div class="answer-title">🤖 Coach Response</div>
+                        <div class="answer-text">{{ coach_answer }}</div>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+            <!-- RIGHT -->
+            <aside class="right-column">
+
+                <!-- QUICK ACTIONS -->
+                <div class="card quick">
+
+                    <div class="card-header">
+                        <div class="card-title">⚡ Quick Actions</div>
+                    </div>
+
+                    <div class="quick-grid">
+
+                        <a href="#workout" class="quick-btn q-green">
+                            <span>🏋</span>
+                            View<br>Workout Plan
+                        </a>
+
+                        <a href="#diet" class="quick-btn q-purple">
+                            <span>🍴</span>
+                            View<br>Diet Plan
+                        </a>
+
+                        <a href="#coach" class="quick-btn q-blue">
+                            <span>🧠</span>
+                            Ask AI Coach
+                        </a>
+
+                        <a href="#messages" class="quick-btn q-orange">
+                            <span>▣</span>
+                            Messages
+                            <span class="quick-badge">2</span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PROGRESS -->
+                <div class="card progress-card" id="progress">
+
+                    <div class="progress-head">
+
+                        <div class="card-title">
+                            📊 Your Progress
+                        </div>
+
+                        <a href="#progress" class="progress-link">
+                            View Details →
+                        </a>
+
+                    </div>
+
+                    <div class="progress-items">
+
+                        <div class="circle">
+
+                            <div class="ring">
+                                <span>✓</span>
+                            </div>
+
+                            <div class="circle-label">
+                                <strong>Workouts</strong>
+                                Plan Ready<br>
+                                Personalized
+                            </div>
+
+                        </div>
+
+                        <div class="circle">
+
+                            <div class="ring">
+                                <span>✓</span>
+                            </div>
+
+                            <div class="circle-label">
+                                <strong>Meals</strong>
+                                On Track<br>
+                                Personalized
+                            </div>
+
+                        </div>
+
+                        <div class="circle">
+
+                            <div class="ring">
+                                <span>✓</span>
+                            </div>
+
+                            <div class="circle-label">
+                                <strong>Goal</strong>
+                                Progress<br>
+                                0%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DIET -->
+                <div class="card" id="diet" style="margin-top:16px;padding-bottom:18px">
+
+                    <div class="card-header">
+
+                        <div>
+                            <div class="card-title">🥗 Diet Plan</div>
+                            <div class="card-sub">Your daily nutrition tip</div>
+                        </div>
+
+                    </div>
+
+                    <div style="padding:18px">
+
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+                            <span style="padding:7px 12px;border-radius:999px;background:rgba(139,92,246,.12);font-size:12px">
+                                🎯 {{ user.goal | title }}
+                            </span>
+
+                            <span style="padding:7px 12px;border-radius:999px;background:rgba(34,197,94,.12);font-size:12px">
+                                ⚡ {{ user.intensity | title }} Intensity
+                            </span>
+                        </div>
+
+                        <div style="padding:16px;border:1px solid var(--border);border-radius:14px;line-height:1.7;font-size:13px;color:var(--muted)">
+                            <strong style="display:block;color:var(--text);margin-bottom:7px">AI Nutrition Tip</strong>
+                            {{ user.nutrition_tip or "Stay hydrated and maintain a balanced diet with enough protein, vegetables and whole foods." }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+</div>
+
+<script>
+function applyTheme(){
+    const saved = localStorage.getItem("fitbuddy-theme");
+    const light = saved === "light";
+
+    document.body.classList.toggle("light", light);
+
+    const button = document.getElementById("themeToggle");
+
+    if(button){
+        button.textContent = light ? "☀️" : "🌙";
+        button.title = light ? "Switch to dark theme" : "Switch to light theme";
+    }
+}
+
+function toggleTheme(){
+    const isLight = document.body.classList.contains("light");
+
+    localStorage.setItem(
+        "fitbuddy-theme",
+        isLight ? "dark" : "light"
+    );
+
+    applyTheme();
+}
+
+applyTheme();
+</script>
+</body>
+</html>
+<style>
+/* ===== CLEAN THEME SYSTEM ===== */
+
+:root{
+    --bg:#06111f;
+    --panel:#0b1a2d;
+    --panel2:#10233a;
+    --border:#1b3552;
+    --text:#f4f8ff;
+    --muted:#8ea3bb;
+    --green:#20d879;
+    --green-dark:#0b6b48;
+    --input:#081a2b;
+}
+
+body{
+    transition:background .25s ease,color .25s ease;
+}
+
+/* Less futuristic, more natural */
+.hero{
+    background:#10263a;
+}
+
+.quick-btn{
+    background-image:none !important;
+}
+
+.q-green{background:#08794e !important}
+.q-purple{background:#5147b8 !important}
+.q-blue{background:#2165b0 !important}
+.q-orange{background:#b87516 !important}
+
+.sidebar{
+    background:#071523;
+}
+
+.topbar{
+    background:#071523;
+}
+
+.card,
+.stat{
+    box-shadow:none;
+}
+
+.theme-toggle{
+    width:42px;
+    height:42px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s;
+}
+
+.theme-toggle:hover{
+    border-color:var(--green);
+}
+
+/* ===== LIGHT THEME ===== */
+
+body.light{
+    --bg:#f3f7f5;
+    --panel:#ffffff;
+    --panel2:#f7faf9;
+    --border:#dce7e2;
+    --text:#17251f;
+    --muted:#65756e;
+    --input:#f5f8f7;
+    --green:#13a965;
+    --green-dark:#087447;
+}
+
+body.light{
+    background:var(--bg);
+    color:var(--text);
+}
+
+body.light .sidebar,
+body.light .topbar{
+    background:#ffffff;
+    border-color:#dce7e2;
+}
+
+body.light .logo-sub{
+    color:#718078;
+}
+
+body.light .menu a{
+    color:#53635c;
+}
+
+body.light .menu a:hover{
+    background:#edf7f2;
+    color:#163b2b;
+}
+
+body.light .menu a.active{
+    background:#dff5e9;
+    color:#087447;
+}
+
+body.light .search{
+    background:#f5f8f7;
+    border-color:#dce7e2;
+    color:#718078;
+}
+
+body.light .search input{
+    color:#17251f;
+}
+
+body.light .search input::placeholder{
+    color:#899790;
+}
+
+body.light .hero{
+    background:#e7f3ed;
+    border-color:#cfe4d9;
+}
+
+body.light .hero h1{
+    color:#17251f;
+}
+
+body.light .hero p,
+body.light .hero-quote{
+    color:#65756e;
+}
+
+body.light .card,
+body.light .stat{
+    background:#ffffff;
+    border-color:#dce7e2;
+}
+
+body.light .card-header{
+    border-color:#e3ebe7;
+}
+
+body.light .card-sub,
+body.light .stat-label,
+body.light .profile-role,
+body.light .profile-row span:first-child{
+    color:#718078;
+}
+
+body.light .stat-value,
+body.light .profile-row span:last-child,
+body.light .card-title{
+    color:#17251f;
+}
+
+body.light .workout:after{
+    background:#eef7f2;
+}
+
+body.light .detail{
+    border-color:#dce7e2;
+}
+
+body.light .detail-label{
+    color:#718078;
+}
+
+body.light .detail-value{
+    color:#30413a;
+}
+
+body.light .profile-row{
+    border-color:#e5ece8;
+}
+
+body.light .sidebar-tip{
+    background:#edf8f3;
+    border-color:#cfe5d9;
+}
+
+body.light .sidebar-tip strong{
+    color:#254238;
+}
+
+body.light .ai-form textarea{
+    background:#f7faf9;
+    color:#17251f;
+    border-color:#d6e3dd;
+}
+
+body.light .ai-form textarea::placeholder{
+    color:#899790;
+}
+
+body.light .answer{
+    background:#edf8f3;
+    border-color:#b9ddca;
+}
+
+body.light .answer-text{
+    color:#34483f;
+}
+
+body.light .activity-item{
+    border-color:#e3ebe7;
+}
+
+body.light .activity-time{
+    color:#7b8b84;
+}
+
+body.light .progress-link{
+    color:#087447;
+}
+
+body.light .ring:after{
+    background:#ffffff;
+}
+
+body.light .circle-label{
+    color:#65756e;
+}
+
+body.light .circle-label strong{
+    color:#263a32;
+}
+
+body.light .diet-card{
+    background:#ffffff;
+}
+
+/* Theme toggle position */
+.top-actions{
+    gap:14px;
+}
+
+@media(max-width:760px){
+    .theme-toggle{
+        width:38px;
+        height:38px;
+    }
+}
+</style>
+
+
+
+
+<!-- ===== PROFILE SETTINGS ===== -->
+<div class="card" id="settings" style="margin-top:16px;">
+    <div class="card-header">
+        <div>
+            <div class="card-title">Profile Settings</div>
+            <div class="card-sub">Your FitBuddy profile information</div>
+        </div>
+    </div>
+
+    <div class="details">
+        <div class="detail">
+            <span class="detail-label">Name</span>
+            <span class="detail-value">{{ user.username }}</span>
+        </div>
+
+        <div class="detail">
+            <span class="detail-label">Age</span>
+            <span class="detail-value">{{ user.age }} years</span>
+        </div>
+
+        <div class="detail">
+            <span class="detail-label">Weight</span>
+            <span class="detail-value">{{ user.weight }} kg</span>
+        </div>
+
+        <div class="detail">
+            <span class="detail-label">Goal</span>
+            <span class="detail-value">{{ user.goal }}</span>
+        </div>
+
+        <div class="detail">
+            <span class="detail-label">Intensity</span>
+            <span class="detail-value">{{ user.intensity }}</span>
+        </div>
+    </div>
+
+    <div style="margin-top:18px;">
+        <a href="/dashboard/{{ user.user_id }}"
+           class="progress-link">
+            ← Back to Dashboard
+        </a>
+    </div>
+</div>
+<!-- ===== FULL WORKOUT PLAN ===== -->
+<div class="card" id="full-plan" style="margin-top:16px;">
+    <div class="card-header">
+        <div>
+            <div class="card-title">Full Workout Plan</div>
+            <div class="card-sub">Your complete personalized workout plan</div>
+        </div>
+    </div>
+
+    <div class="plan-content">
+        {% if user.updated_plan %}
+            {{ user.updated_plan | replace('\n', '<br>') | safe }}
+        {% elif user.original_plan %}
+            {{ user.original_plan | replace('\n', '<br>') | safe }}
+        {% else %}
+            <p class="card-sub">Your workout plan is not available yet.</p>
+        {% endif %}
+    </div>
+
+    <div style="margin-top:18px;">
+        <a href="#workout" class="progress-link">
+            ↑ Back to Workout Plan
+        </a>
+    </div>
+</div>
+<!-- ===== MESSAGES / FEEDBACK ===== -->
+<div class="card" id="feedback" style="margin-top:16px;">
+    <div class="card-header">
+        <div>
+            <div class="card-title">Messages & Feedback</div>
+            <div class="card-sub">Send feedback or a message to your FitBuddy coach</div>
+        </div>
+    </div>
+
+    <form method="post" action="/submit-feedback" style="margin-top:18px;">
+        <input type="hidden" name="user_id" value="{{ user.user_id }}">
+
+        <textarea
+            name="feedback"
+            required
+            placeholder="Write your message or feedback..."
+            style="width:100%;min-height:120px;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--input);color:var(--text);resize:vertical;"
+        ></textarea>
+
+        <button
+            type="submit"
+            style="margin-top:12px;padding:12px 20px;border:0;border-radius:10px;background:var(--green);color:white;font-weight:700;cursor:pointer;"
+        >
+            Send Message →
+        </button>
+    </form>
+</div>
+
+<style>
+.logout-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:9px 16px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    color:var(--text);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    background:var(--panel);
+    transition:.2s;
+}
+
+.logout-btn:hover{
+    border-color:var(--green);
+    color:var(--green);
+}
+</style>
+<script>
+function fitbuddySearch(){
+    const input = document.getElementById("fitbuddySearch");
+    if(!input) return;
+
+    const query = input.value.trim().toLowerCase();
+
+    const sections = {
+        workout: "workout",
+        "workout plan": "workout",
+        diet: "diet",
+        "diet plan": "diet",
+        progress: "progress",
+        coach: "coach",
+        "ai coach": "coach",
+        message: "messages",
+        messages: "messages",
+        feedback: "messages",
+        settings: "settings",
+        profile: "settings",
+        "full plan": "full-plan"
+    };
+
+    if(sections[query]){
+        document.getElementById(sections[query])?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    } else if(query) {
+        alert("No matching section found. Try: Workout, Diet, Progress, Coach, Messages or Settings.");
+    }
+}
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const search = document.getElementById("fitbuddySearch");
+
+    if(search){
+        search.addEventListener("keydown", function(event){
+            if(event.key === "Enter"){
+                event.preventDefault();
+                fitbuddySearch();
+            }
+        });
+    }
+});
+</script>
+<style>
+.notification-wrap{
+    position:relative;
+}
+
+.notification-btn{
+    width:42px;
+    height:42px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    font-size:18px;
+}
+
+.notification-btn:hover{
+    border-color:var(--green);
+}
+
+.notification-panel{
+    display:none;
+    position:absolute;
+    right:0;
+    top:52px;
+    width:290px;
+    padding:16px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.18);
+    z-index:1000;
+}
+
+.notification-panel.show{
+    display:block;
+}
+
+.notification-title{
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.notification-item{
+    padding:11px 0;
+    border-bottom:1px solid var(--border);
+    font-size:13px;
+    color:var(--muted);
+}
+
+.notification-item:last-child{
+    border-bottom:0;
+}
+</style>
+
+<script>
+function toggleNotifications(){
+    const panel = document.getElementById("notificationPanel");
+
+    if(panel){
+        panel.classList.toggle("show");
+    }
+}
+</script>
+
+
+
+
+

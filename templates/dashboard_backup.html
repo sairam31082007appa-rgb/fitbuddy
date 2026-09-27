@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy Dashboard</title>
+
+    <style>
+        :root {
+            --bg: #f4f7fb;
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --accent: #22c55e;
+            --accent-dark: #16a34a;
+            --accent-soft: #dcfce7;
+            --shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+            --danger: #ef4444;
+        }
+
+        body.dark {
+            --bg: #080b10;
+            --surface: #11161d;
+            --surface-2: #171d25;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --border: #26303c;
+            --accent: #4ade80;
+            --accent-dark: #22c55e;
+            --accent-soft: rgba(74, 222, 128, 0.12);
+            --shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+            --danger: #f87171;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background .25s ease, color .25s ease;
+        }
+
+        button,
+        textarea {
+            font: inherit;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(16px);
+            background: color-mix(in srgb, var(--bg) 88%, transparent);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-inner {
+            width: min(1180px, calc(100% - 32px));
+            margin: auto;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 800;
+            font-size: 21px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--accent);
+            color: #052e16;
+            font-size: 21px;
+            box-shadow: 0 8px 22px rgba(34, 197, 94, .22);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .theme-btn,
+        .logout-btn {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 12px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .theme-btn:hover,
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            border-color: var(--accent);
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 32px));
+            margin: auto;
+            padding: 38px 0 60px;
+        }
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: var(--accent-dark);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            margin-bottom: 9px;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(30px, 5vw, 48px);
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+        }
+
+        .hero p {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 13px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-dark);
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: transform .2s ease, border-color .2s ease;
+        }
+
+        .stat:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 11px;
+            background: var(--accent-soft);
+            font-size: 18px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            margin-top: 13px;
+            font-size: 21px;
+            font-weight: 800;
+            text-transform: capitalize;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(300px, .75fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .card-subtitle {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .workout-content {
+            white-space: pre-wrap;
+            line-height: 1.75;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .nutrition {
+            background: var(--accent-soft);
+            border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+            border-radius: 16px;
+            padding: 18px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .nutrition-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .coach-card {
+            margin-top: 20px;
+        }
+
+        .coach-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-dark);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .coach-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .coach-form textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
+            outline: none;
+            background: var(--surface-2);
+            color: var(--text);
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .coach-form textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        .ask-btn {
+            justify-self: start;
+            border: 0;
+            border-radius: 13px;
+            padding: 12px 18px;
+            background: var(--accent);
+            color: #052e16;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .ask-btn:hover {
+            background: var(--accent-dark);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .coach-answer {
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+        }
+
+        .coach-answer-title {
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .coach-answer-text {
+            white-space: pre-wrap;
+            line-height: 1.7;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .side {
+            display: grid;
+            gap: 20px;
+        }
+
+        .profile {
+            padding: 24px;
+        }
+
+        .profile-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 52px;
+            height: 52px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: var(--accent);
+            color: #052e16;
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+        .profile-name {
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .profile-id {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .profile-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .profile-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .profile-row span:first-child {
+            color: var(--muted);
+        }
+
+        .profile-row span:last-child {
+            font-weight: 700;
+            text-transform: capitalize;
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar-inner,
+            .container {
+                width: min(100% - 20px, 1180px);
+            }
+
+            .topbar-inner {
+                min-height: 64px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .brand-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .logout-btn {
+                display: none;
+            }
+
+            .container {
+                padding-top: 25px;
+            }
+
+            .hero {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat {
+                padding: 15px;
+                border-radius: 15px;
+            }
+
+            .stat-value {
+                font-size: 17px;
+            }
+
+            .card-head,
+            .card-body,
+            .profile {
+                padding: 18px;
+            }
+        }
+    </style>
+
+    <script>
+        function applyTheme() {
+            const saved = localStorage.getItem("fitbuddy-theme");
+
+            if (saved === "light") {
+                document.body.classList.remove("dark");
+                document.getElementById("themeIcon").textContent = "??";
+                document.getElementById("themeText").textContent = "Dark";
+            } else {
+                document.body.classList.add("dark");
+                document.getElementById("themeIcon").textContent = "??";
+                document.getElementById("themeText").textContent = "Light";
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+
+            const isDark = document.body.classList.contains("dark");
+            localStorage.setItem("fitbuddy-theme", isDark ? "dark" : "light");
+
+            document.getElementById("themeIcon").textContent = isDark ? "??" : "??";
+            document.getElementById("themeText").textContent = isDark ? "Light" : "Dark";
+        }
+
+        window.addEventListener("DOMContentLoaded", applyTheme);
+    </script>
+</head>
+
+<body class="dark">
+<div class="app">
+
+    <header class="topbar">
+        <div class="topbar-inner">
+
+            <a href="/dashboard/{{ user.user_id }}" class="brand">
+                <span class="brand-icon">?</span>
+                FitBuddy
+            </a>
+
+            <div class="top-actions">
+                <button class="theme-btn" onclick="toggleTheme()" type="button">
+                    <span id="themeIcon">??</span>
+                    <span id="themeText">Light</span>
+                </button>
+
+                <a href="/login" class="logout-btn" style="text-decoration:none;">
+                    Logout
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="hero">
+            <div>
+                <div class="eyebrow">Personal Fitness Dashboard</div>
+                <h1>Welcome, {{ user.username }} ??</h1>
+                <p>Your personalized fitness journey, all in one place.</p>
+            </div>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                Plan Active
+            </div>
+        </section>
+
+        <section class="stats">
+
+            <div class="stat">
+                <div class="stat-top">
+                    <div class="stat-label">Age</div>
+                    <div class="stat-icon">??</div>
+                </div>
+                <div class="stat-value">{{ user.age }} yrs</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-top">
+                    <div class="stat-label">Weight</div>
+                    <div class="stat-icon">??</div>
+                </div>
+                <div class="stat-value">{{ user.weight }} kg</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-top">
+                    <div class="stat-label">Goal</div>
+                    <div class="stat-icon">??</div>
+                </div>
+                <div class="stat-value">{{ user.goal }}</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-top">
+                    <div class="stat-label">Intensity</div>
+                    <div class="stat-icon">??</div>
+                </div>
+                <div class="stat-value">{{ user.intensity }}</div>
+            </div>
+
+        </section>
+
+        <section class="main-grid">
+
+            <div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title">??? Your Workout Plan</h2>
+                            <p class="card-subtitle">Your personalized weekly training plan</p>
+                        </div>
+                        <span class="coach-badge">7 Day Plan</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="workout-content">{{ user.updated_plan or user.original_plan }}</div>
+                    </div>
+                </div>
+
+                <div class="card coach-card">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title">?? AI Coach</h2>
+                            <p class="card-subtitle">Ask questions and get personalized guidance</p>
+                        </div>
+                        <span class="coach-badge">AI Powered</span>
+                    </div>
+
+                    <div class="card-body">
+
+                        <form method="post" action="/ai-coach" class="coach-form">
+
+                            <input
+                                type="hidden"
+                                name="user_id"
+                                value="{{ user.user_id }}"
+                            >
+
+                            <textarea
+                                name="question"
+                                placeholder="Example: How can I improve my workout recovery?"
+                                required
+                            ></textarea>
+
+                            <button class="ask-btn" type="submit">
+                                Ask AI Coach ?
+                            </button>
+
+                        </form>
+
+                        {% if coach_answer %}
+                        <div class="coach-answer">
+                            <div class="coach-answer-title">?? Coach Response</div>
+                            <div class="coach-answer-text">{{ coach_answer }}</div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <aside class="side">
+
+                <div class="card">
+                    <div class="profile">
+                        <div class="profile-head">
+                            <div class="avatar">
+                                {{ user.username[0]|upper }}
+                            </div>
+
+                            <div>
+                                <div class="profile-name">{{ user.username }}</div>
+                                <div class="profile-id">FitBuddy Member</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-row">
+                            <span>Age</span>
+                            <span>{{ user.age }} years</span>
+                        </div>
+
+                        <div class="profile-row">
+                            <span>Weight</span>
+                            <span>{{ user.weight }} kg</span>
+                        </div>
+
+                        <div class="profile-row">
+                            <span>Goal</span>
+                            <span>{{ user.goal }}</span>
+                        </div>
+
+                        <div class="profile-row">
+                            <span>Intensity</span>
+                            <span>{{ user.intensity }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-head">
+                        <div>
+                            <h2 class="card-title">?? Nutrition</h2>
+                            <p class="card-subtitle">Daily wellness reminder</p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="nutrition">
+                            <div class="nutrition-title">
+                                ?? Stay Consistent
+                            </div>
+
+                            {{ user.nutrition_tip or "Stay hydrated and maintain a balanced diet." }}
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+        </section>
+
+        <div class="footer">
+            FitBuddy ? Your AI-powered fitness companion
+        </div>
+
+    </main>
+</div>
+</body>
+</html>

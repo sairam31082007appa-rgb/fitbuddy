@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitBuddy - Create Profile</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #111827, #172554);
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(18px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .logo img {
+            width: 85px;
+            height: 85px;
+            object-fit: contain;
+            border-radius: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #cbd5e1;
+            margin-bottom: 28px;
+            font-size: 15px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            background: rgba(15,23,42,0.75);
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus, select:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96,165,250,0.15);
+        }
+
+        select option {
+            background: #111827;
+            color: white;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 13px;
+            padding: 15px;
+            margin-top: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            box-shadow: 0 10px 25px rgba(37,99,235,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(37,99,235,0.4);
+        }
+
+        .email {
+            text-align: center;
+            margin-bottom: 22px;
+            color: #93c5fd;
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 25px 20px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <div class="logo">
+            <img src="/static/logo.png" alt="FitBuddy Logo">
+        </div>
+
+        <h1>Create Your Profile</h1>
+
+        <p class="subtitle">
+            Tell FitBuddy a little about yourself to create your personalized fitness plan.
+        </p>
+
+        {% if email %}
+        <div class="email">
+            Logged in as {{ email }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/generate-workout">
+
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+
+            <div class="field">
+                <label>👤 Your Name</label>
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Enter your name"
+                    required
+                >
+            </div>
+
+            <div class="row">
+
+                <div class="field">
+                    <label>🎂 Age</label>
+                    <input
+                        type="number"
+                        name="age"
+                        placeholder="Age"
+                        min="13"
+                        max="100"
+                        required
+                    >
+                </div>
+
+                <div class="field">
+                    <label>⚖️ Weight (kg)</label>
+                    <input
+                        type="number"
+                        name="weight"
+                        placeholder="Weight"
+                        min="20"
+                        max="300"
+                        step="0.1"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label>🎯 Fitness Goal</label>
+                <select name="goal" required>
+                    <option value="">Select your goal</option>
+                    <option value="weight loss">Weight Loss</option>
+                    <option value="muscle gain">Muscle Gain</option>
+                    <option value="fitness">General Fitness</option>
+                    <option value="strength">Strength</option>
+                    <option value="flexibility">Flexibility</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>🔥 Workout Intensity</label>
+                <select name="intensity" required>
+                    <option value="">Select intensity</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <button type="submit">
+                Generate My Fitness Plan →
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

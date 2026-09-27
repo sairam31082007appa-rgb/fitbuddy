@@ -232,3 +232,49 @@ Stop exercise if you experience pain, dizziness,
 chest discomfort, or unusual shortness of breath,
 and seek appropriate professional advice.
 """
+def ask_ai_coach(
+    question,
+    username="FitBuddy User",
+    goal="general fitness"
+):
+
+    client = get_gemini_client()
+
+    prompt = f"""
+You are FitBuddy AI Coach.
+
+User:
+{username}
+
+Fitness Goal:
+{goal}
+
+User Question:
+{question}
+
+Give a practical, concise fitness answer.
+
+Rules:
+- Be supportive and easy to understand.
+- Do not diagnose medical conditions.
+- Do not prescribe medicines.
+- Do not recommend extreme diets or unsafe workouts.
+- If the question involves serious pain, injury, chest pain,
+  dizziness, or breathing difficulty, recommend appropriate
+  professional medical help.
+"""
+
+    if client is None:
+        return (
+            "AI Coach is currently using basic mode. "
+            "Stay consistent with your workout, stay hydrated, "
+            "and get enough sleep. For specific concerns, "
+            "please consult a qualified professional."
+        )
+
+    response = client.models.generate_content(
+        model=GEMINI_WORKOUT_MODEL,
+        contents=prompt
+    )
+
+    return response.text.strip()
