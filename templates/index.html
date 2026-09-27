@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        FitBuddy — AI Fitness Planner
+    </title>
+
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="nav">
+
+    <a
+        class="brand"
+        href="/"
+    >
+
+        <span>F</span>
+
+        FitBuddy
+
+    </a>
+
+
+    <a
+        class="nav-link"
+        href="/view-all-users"
+    >
+
+        Coach Dashboard ↗
+
+    </a>
+
+</header>
+
+
+
+<main class="hero-shell">
+
+
+    <section class="hero-copy">
+
+        <div class="eyebrow">
+            AI-POWERED FITNESS COACH
+        </div>
+
+
+        <h1>
+
+            Your plan.
+            <br>
+
+            <em>Your pace.</em>
+
+            <br>
+
+            Your progress.
+
+        </h1>
+
+
+        <p>
+
+            Tell FitBuddy your goal and training
+            preference. Gemini creates a structured
+            7-day routine plus a practical nutrition tip.
+
+        </p>
+
+
+        <div class="trust-row">
+
+            <span>
+                ✓ Personalized
+            </span>
+
+            <span>
+                ✓ 7-day plan
+            </span>
+
+            <span>
+                ✓ Adaptive feedback
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <section class="glass-card">
+
+
+        <div class="card-head">
+
+            <div>
+
+                <div class="mini-label">
+                    GET STARTED
+                </div>
+
+                <h2>
+                    Build your plan
+                </h2>
+
+            </div>
+
+
+            <div class="step">
+                01 / 01
+            </div>
+
+        </div>
+
+
+
+        <form
+            action="/generate-workout"
+            method="post"
+            onsubmit="showLoading()"
+        >
+
+
+            <div class="field-grid">
+
+
+                <label>
+
+                    Full name
+
+                    <input
+                        type="text"
+                        name="username"
+                        required
+                        minlength="2"
+                        placeholder="e.g. Sai Ram"
+                    >
+
+                </label>
+
+
+
+                <label>
+
+                    User ID
+
+                    <input
+                        type="text"
+                        name="user_id"
+                        required
+                        minlength="2"
+                        placeholder="e.g. sai001"
+                    >
+
+                </label>
+
+
+
+                <label>
+
+                    Age
+
+                    <input
+                        type="number"
+                        name="age"
+                        min="13"
+                        max="100"
+                        required
+                        placeholder="24"
+                    >
+
+                </label>
+
+
+
+                <label>
+
+                    Weight (kg)
+
+                    <input
+                        type="number"
+                        name="weight"
+                        min="20"
+                        max="400"
+                        step="0.1"
+                        required
+                        placeholder="68"
+                    >
+
+                </label>
+
+
+            </div>
+
+
+
+            <label>
+
+                Primary goal
+
+                <select
+                    name="goal"
+                    required
+                >
+
+                    <option
+                        value=""
+                        disabled
+                        selected
+                    >
+                        Choose your goal
+                    </option>
+
+                    <option value="weight loss">
+                        Weight loss
+                    </option>
+
+                    <option value="muscle gain">
+                        Muscle gain
+                    </option>
+
+                    <option value="general wellness">
+                        General wellness
+                    </option>
+
+                    <option value="flexibility">
+                        Flexibility
+                    </option>
+
+                </select>
+
+            </label>
+
+
+
+            <div class="intensity-title">
+
+                Workout intensity
+
+            </div>
+
+
+
+            <div class="choice-grid">
+
+
+                <label class="choice">
+
+                    <input
+                        type="radio"
+                        name="intensity"
+                        value="low"
+                        required
+                    >
+
+                    <span>
+
+                        Low
+
+                        <small>
+                            Easy & steady
+                        </small>
+
+                    </span>
+
+                </label>
+
+
+
+                <label class="choice">
+
+                    <input
+                        type="radio"
+                        name="intensity"
+                        value="medium"
+                    >
+
+                    <span>
+
+                        Medium
+
+                        <small>
+                            Balanced effort
+                        </small>
+
+                    </span>
+
+                </label>
+
+
+
+                <label class="choice">
+
+                    <input
+                        type="radio"
+                        name="intensity"
+                        value="high"
+                    >
+
+                    <span>
+
+                        High
+
+                        <small>
+                            Challenging
+                        </small>
+
+                    </span>
+
+                </label>
+
+
+            </div>
+
+
+
+            <button
+                id="generateBtn"
+                class="primary-btn"
+                type="submit"
+            >
+
+                Generate my 7-day plan
+
+                <span>
+                    →
+                </span>
+
+            </button>
+
+
+            <p class="privacy">
+
+                Your details are stored locally
+                in SQLite for this demo.
+
+            </p>
+
+
+        </form>
+
+    </section>
+
+
+</main>
+
+
+
+<div
+    id="loading"
+    class="loading"
+>
+
+    <div class="spinner"></div>
+
+    <strong>
+        Building your plan...
+    </strong>
+
+    <span>
+        Gemini is tailoring your week.
+    </span>
+
+</div>
+
+
+
+<script>
+
+function showLoading() {
+
+    document
+        .getElementById("loading")
+        .classList
+        .add("show");
+
+
+    document
+        .getElementById("generateBtn")
+        .disabled = true;
+
+}
+
+</script>
+
+
+</body>
+
+</html>

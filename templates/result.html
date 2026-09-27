@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        FitBuddy — Your Plan
+    </title>
+
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="nav">
+
+
+    <a
+        class="brand"
+        href="/"
+    >
+
+        <span>
+            F
+        </span>
+
+        FitBuddy
+
+    </a>
+
+
+    <a
+        class="nav-link"
+        href="/"
+    >
+
+        + New plan
+
+    </a>
+
+
+</header>
+
+
+
+<main class="result-shell">
+
+
+{% if error %}
+
+<div class="alert">
+
+    {{ error }}
+
+</div>
+
+{% endif %}
+
+
+
+{% if user %}
+
+
+<section class="result-top">
+
+
+    <div>
+
+        <div class="eyebrow">
+            YOUR PERSONAL PLAN
+        </div>
+
+
+        <h1>
+            Ready, {{ user.username }}.
+        </h1>
+
+
+        <p>
+
+            Here is your
+
+            <strong>
+                {{ user.intensity }}
+            </strong>
+
+            intensity week designed around
+
+            <strong>
+                {{ user.goal }}
+            </strong>.
+
+        </p>
+
+    </div>
+
+
+    <div class="badge">
+
+        7 DAYS
+
+    </div>
+
+
+</section>
+
+
+
+<div class="stats">
+
+
+    <div>
+
+        <small>
+            AGE
+        </small>
+
+        <strong>
+            {{ user.age }}
+        </strong>
+
+    </div>
+
+
+    <div>
+
+        <small>
+            WEIGHT
+        </small>
+
+        <strong>
+            {{ user.weight }} kg
+        </strong>
+
+    </div>
+
+
+    <div>
+
+        <small>
+            GOAL
+        </small>
+
+        <strong>
+            {{ user.goal|title }}
+        </strong>
+
+    </div>
+
+
+    <div>
+
+        <small>
+            INTENSITY
+        </small>
+
+        <strong>
+            {{ user.intensity|title }}
+        </strong>
+
+    </div>
+
+
+</div>
+
+
+
+{% if updated %}
+
+<div class="success">
+
+    ✓ Plan updated successfully
+    using your feedback.
+
+</div>
+
+{% endif %}
+
+
+
+<section class="content-grid">
+
+
+    <div class="plan-card">
+
+
+        <div class="section-head">
+
+            <h2>
+                Weekly workout plan
+            </h2>
+
+            <span>
+                AI generated
+            </span>
+
+        </div>
+
+
+        <pre class="plan">{{ plan }}</pre>
+
+
+    </div>
+
+
+
+    <aside>
+
+
+        <div class="tip-card">
+
+
+            <div class="tip-icon">
+                ✦
+            </div>
+
+
+            <div class="mini-label">
+                NUTRITION / RECOVERY
+            </div>
+
+
+            <h3>
+                One small habit.
+            </h3>
+
+
+            <p>
+                {{ tip }}
+            </p>
+
+
+        </div>
+
+
+
+        <div class="feedback-card">
+
+
+            <div class="mini-label">
+                REFINE YOUR PLAN
+            </div>
+
+
+            <h3>
+                Want to change something?
+            </h3>
+
+
+            <p>
+
+                Tell FitBuddy what felt too easy,
+                too hard, or what you want more of.
+
+            </p>
+
+
+            <form
+                action="/submit-feedback"
+                method="post"
+                onsubmit="showLoading()"
+            >
+
+
+                <input
+                    type="hidden"
+                    name="user_id"
+                    value="{{ user.user_id }}"
+                >
+
+
+                <textarea
+                    name="feedback"
+                    required
+                    minlength="3"
+                    placeholder="e.g. Add more cardio and one extra rest day..."
+                ></textarea>
+
+
+                <button
+                    class="primary-btn"
+                    type="submit"
+                >
+
+                    Update my plan
+
+                    <span>
+                        →
+                    </span>
+
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+
+    </aside>
+
+
+</section>
+
+
+{% endif %}
+
+
+</main>
+
+
+
+<div
+    id="loading"
+    class="loading"
+>
+
+    <div class="spinner"></div>
+
+    <strong>
+        Updating your plan...
+    </strong>
+
+    <span>
+        FitBuddy is applying your feedback.
+    </span>
+
+</div>
+
+
+
+<script>
+
+function showLoading() {
+
+    document
+        .getElementById("loading")
+        .classList
+        .add("show");
+
+}
+
+</script>
+
+
+</body>
+
+</html>
